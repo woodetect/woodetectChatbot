@@ -1,0 +1,68 @@
+
+Woodetect est le nouvel outil proposé aux organismes souhaitant lutter efficacement contre le trafic de bois. Un réseau de capteurs acoustiques permettra de détecter toutes activités suspectes tels que des camions ou tronçonneuses et alertera en temps réel les autorités sur place. Les organisme disposeront d’un système de surveillance autonome.
+
+Problème :
+
+Votre cabane de jardin ou votre terrasse en teck cachent peut-être de lourds secrets.
+En effet, le trafic de bois illégal est une immense industrie parallèle qui pèse des milliards et menace les forêts du monde entier car il reste une des principales causes de la déforestation mondiale. Certaines recherches montrent que près de 10 % du commerce de bois international concernerait du bois illégal, soit 150 milliards de dollars par an. Comme rappelé par Interpol, les atteintes à l’environnement qui en découlent vont souvent de pair avec d’autres infractions comme la corruption ou le blanchiment. A titre de comparaison le premier trafic mondial, la drogue, pèse quant à lui 200 milliards de dollars par an.
+
+En effet, ce trafic peut être défini par les pratiques suivantes, souvent concomitantes : corruption pour obtenir des accès à des zones forestières protégées ; coupes d’arbres sans permissions dans ces zones, dont des espèces rares et protégées ; prélèvements supérieurs aux quotas autorisés ; production de faux documents lors des contrôles aux frontières ; soustraction à toute la fiscalité en vigueur sur ces produits.
+Au-delà des conséquences environnementales majeures évidentes, les conséquences sociales du trafic de bois illégal sont souvent tout aussi dévastatrices ; d’abord parce qu’il induit une criminalité parfois violente, du travail forcé – y compris d’enfants – ainsi que des conditions de travail souvent désastreuses. En outre, le trafic de bois illégal porte généralement atteinte aux droits des peuples autochtones.
+Si énormément de pays sont touchés par ce trafic, peu d’entre eux ont les moyens et la main-d’œuvre nécessaire pour lutter efficacement contre.
+Woodetect facilitera le développement d’une exploitation forestière durable en privilégiant les aspects environnementaux face aux intérêts économiques en protégeant les forêts grâce à un système de détection innovant.
+
+Solution :
+
+Un réseau de capteurs acoustiques permettra de détecter toutes activités suspectes tels que des camions ou tronçonneuses et alertera en temps réel les autorités sur place plus rapidement que n’importe quel solutions existante (imagerie satellite, gardien de forêt, etc…), cette solution fonctionne de jour comme de nuit.
+Le but est d’alerter en temps réel sur notre application lors de la détection d’une activité suspecte représentée par un bruit (camion, tronçonneuse ...) capté par notre réseau. 
+Fonctionnellement notre projet est découpé en 4 parts : 
+- La détection :
+Elle se fera grâce aux différents capteurs acoustique installés de manière stratégique en forêt , qui seront configurés afin d’être en mesure d’ignorer les bruits ambiants / naturels et ainsi de ne détecter que les bruits anormaux. En utilisant certaines propriétés des sons il est assez facile de distinguer ces deux genres de bruits. 
+- La communication :
+Les capteurs seront reliés entre eux par radio, ils seront en mesure de remonter les bruits suspect jusqu’à notre dispositif d’envoie située dans une zone reliée à internet. 
+- L’analyse : Les bruits reçu seront analyser grâce à une intelligence artificielle entrainé sur des bruits anormaux (camion, tronçonneuse, etc…), nous serons ainsi capable de faire la distinction entre les bruits provenant de la forêt et ceux propre à l’homme avec autant de précision que l’oreille humaine.
+- L'alerte :
+Après analyse et en cas de détection de bruit de tronçonneuse ou autres activités de déforestation, notre serveur enverra une requête qui viendra afficher l’alerte sur notre application. Ainsi l’utilisateur de notre application verra en temps réel quel capteur a détecté une activité suspecte. 
+
+Cibles :
+
+Notre solution cible les entités possédant ou gérant des zones forestières à protéger (notamment les états). Mais aussi les organismes certificateurs de bois (Bureau Veritas, SGS) qui doivent s’assurer du respect des règles des entreprises exploitant du bois.
+Les pays qui gèrent des parcelles de forêt, nous voulons proposer notre solution à ces pays pour qu'ils puissent surveiller les trafics qui ont lieu dans les forêts gouvernementales. Ces pays, souvent en voie de développement, n'ont ni les moyens ni la main-d'œuvre nécessaire pour déployer une solution viable à grande échelle. Notre solution nécessitera que très peu de main-d'œuvre et sera relativement abordable au vu des économies potentielles. Des pays éprouvant ce besoin sont nombreux, notamment en Afrique de l'Ouest et en Amérique centrale et du Sud où se trouve 2 des plus grandes forêts du monde : les forêts du bassin du Congo et la forêt Amazonienne. On peut citer entre autre, le Mozambique, le Sénégal, le Ghana, le Brésil ou même l'Ukraine (forêts des Carpates).
+
+Concept économique :
+
+Notre client fera appel à nous pour une installation sur une certaine parcelle, et en fonction de la taille de celle-ci (en hectares) nous évaluerons le coût matériel de l'opération. S'ajouteront à cela les frais d'installation du réseau de capteurs, qui dépendront eux aussi de la surface à couvrir.
+Au niveau de la maintenance du réseau de capteurs, notre but serait de pouvoir former sur place du personnel capable de gérer cette partie afin d'éviter des frais de déplacement conséquent. Cette formation sera proposée gratuitement lors de l'installation.
+Dans le cas où le personnel formé ne serait pas suffisant, une équipe sera envoyée sur place afin d'établir un diagnostique du problème et de faire un devis. Cette intervention sera aux frais du client.
+
+Technologies :
+
+Woodetect se présenterait sous la forme d'une application web vitrine, d'un dashboard et aussi d'une application mobile.
+
+* L'application web vitrine :
+
+- Les utilisateurs pourront voir qu'est-ce que Woodetect, ses objectifs, la présentation de la solution mais aussi pourront contacter Woodetect via un formulaire de contact.
+- Les utilisateurs pourront souscrire à un abonnement mensuel ou annuel à notre solution pour bénéficier de nos services.
+- Une fois abonné les utilisateurs pourront créer leurs comptes grâce à un token d'accès fournis lors de la souscription à une de nos offres :
+-> Ils auront accès à un Dashboard qui contiendra toutes les informations transmises par nos capteurs sous forme de graphiques et de statistiques.
+-> Ils pourront nous contacter directement via un système de tickets afin que leurs problèmes soient résolus dans les plus brefs délais.
+
+* L'application mobile :
+
+- Cette application est l'intégration de notre dashboard sur mobile (Android et IOS).
+- De manière simple et lisible, elle permettra facilement à nos utilisateurs de voir leurs alertes.
+
+Notre solution collectera des données sur le terrain, via des capteurs sonores. Le but serait de détecter toutes activités anormales à l’aide des capteurs sonores qui seront capables d'alerter en cas d'activités illégales. Du machine learning traitera les données sonores récoltées afin de différencier les bruits liés à des activités anormales/illégales (tronçonneuses, présence de camions…) des bruits naturels présents dans un environnement sauvage.
+Les capteurs sonores seraient placés de façon stratégique afin de couvrir la parcelle entièrement et ainsi de pouvoir triangulariser la localisation des bruits suspects. Cela permettra de transmettre une donnée précise quant à l'emplacement de l'activité illégale détecté.
+
+Dans le cas où une activité anormale serait détectée, les données récupérées par le ou les capteurs sonores seront transmissent au gestionnaire de la forêt en question ou directement aux autorités sur place.
+La technologie satellitaire envoie les données en temps réel depuis pratiquement n'importe quel endroit du monde vers un outil de gestion des données intuitif qui servira d'alerte.
+
+Framework legal disponible sur le site :
+
+- Mentions légales
+- Conditions générales d’utilisation
+- Conditions générales de vente
+- Gestion des données personnelles conformes avec le Règlement Général sur la Protection des Données (RGPD)
+- Informations fournies non exhaustives
+- Consentement de l’utilisateur sur le stockage et le partage de ses données

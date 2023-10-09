@@ -1,0 +1,12 @@
+scipy
+datasets
+peft
+transformers
+trl
+einops
+bitsandbytes
+langchain
+xformers
+flask
+flask-cors
+openai
