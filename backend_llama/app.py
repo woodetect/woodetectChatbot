@@ -15,30 +15,7 @@ from langchain.schema import BaseOutputParser
 warnings.filterwarnings("ignore", category=UserWarning)
 
 woodetect = """
-Woodetect est une startup française qui développe des solutions technologiques pour lutter contre le trafic de bois illégal. Notre première solution est un système de surveillance autonome qui détecte les activités suspectes dans les forêts et alerte les autorités en temps réel.
-Problème: Trafic de bois illégal pèse 150 milliards de dollars/an, menace les forêts mondiales, et entraîne des conséquences sociales et environnementales graves. Peu de pays ont les ressources pour lutter efficacement.
-Solution:
-Détection: Capteurs acoustiques autonome capable de reconnaitre plusieurs sons (tronçonneuse, oiseaux, camions, animaux...).
-Communication: Capteurs reliés par radio à un dispositif connecté à Internet.
-Analyse: IA entraînée pour distinguer les bruits anormaux.
-Alerte: Notifications en temps réel sur une application et un site internet.
-Cibles: États, organismes certificateurs de bois, pays en développement.
-Concept économique: Coût basé sur la taille de la zone à surveiller. Formation gratuite pour la maintenance locale.
-Installation:
-L’application Woodetect sera disponible sur le Play store et à l’avenir sur l’Apple Store.
-Un lien permettant d’y accéder sera disponible sur le site vitrine ainsi que sur le site principal
-FAQ:
-Qui est derrière Woodetect ? Woodetect est créée par 9 étudiants de l’EPITECH.
-Comment s’installe le capteur ? Le capteur sera fourni avec une notice d’installation mais l’utilisateur à la possibilité de demander une installation par un professionnel.
-Comment recevoir les alertes ? Les notifications sont envoyées automatiquement par mail en cas d’alerte et par notification si l’application est installée
-Comment est alimenté le capteur ? Le capteur est alimenté par des batteries de 9V rechargeable par le solaire.
-Comment sont gérées les données personnelles ? Nous respectons le RGPD et mettons tout en place pour assurer la sécurité des informations personnelles.
-Pour toute questions supplémentaires, nous possédons un mail de contact.
-
-email contact : contact@woodetect.com
-site : https://www.woodetect.com/
-tél : 06 03 98 60 75
-"""
+""" # empty if fine-tuned
 
 def parse_dumb_response(answer):
     # need to be in proper order
@@ -86,7 +63,7 @@ def write_log(text):
     with open("log.txt", "a") as f:
         f.write(text + "\n")
 
-instruction = "Conversation entre un commercial et un utilisateur potentiel intéressé par le produit. L'utilisateur pose des questions et le commercial y répond. Directives pour le modèle: Répondez de manière concise et précise aux questions de l'utilisateur. Si vous ne savez pas, indiquez-le clairement."
+instruction = "" # no need if fine-tuned
 
 app = Flask(__name__)
 cors = CORS(app)
