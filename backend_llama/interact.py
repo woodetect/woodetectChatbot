@@ -19,8 +19,8 @@ def llama_cpp_call(woodetect, instruction, question):
     prompt = f"{woodetect}\n{instruction}\n:{formatted}"
     command = [
         "./llama.cpp/main",
-        "-m", "./llama.cpp/ggml-model-q4_0.gguf",
-        "--temp", "0.2",
+        "-m", "../../llama-2-7b.Q8_0.gguf",
+        "--lora", "../../woodetect-lora-q8-LATEST.bin",
         "--ctx-size", "2048",
         "--frequency-penalty", "1.4",
         "--presence-penalty", "1.4",

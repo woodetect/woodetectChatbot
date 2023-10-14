@@ -39,7 +39,7 @@ def parse_dumb_response(answer):
 def llama_cpp_call(conversation, user_msg):
     prefix = "Bot:"
     prompt = f"{conversation}\n{user_msg}\n{prefix}"
-    # Command and parameters as a list
+    """
     command = [
         "./llama.cpp/main",
         "-m", "./llama.cpp/ggml-model-q4_0.gguf",
@@ -49,6 +49,17 @@ def llama_cpp_call(conversation, user_msg):
         "--presence-penalty", "1.4",
         "-p", prompt,
         "-n", "128"
+    ]"""
+    # Command and parameters as a list
+    command = [
+        "./llama.cpp/main",
+        "-m", "../../llama-2-7b.Q8_0.gguf",
+        "--lora", "../../woodetect-lora-q8-LATEST.bin",
+        "--ctx-size", "2048",
+        "--frequency-penalty", "1.4",
+        "--presence-penalty", "1.4",
+        "-p", prompt,
+        "-n", "180"
     ]
     process = Popen(command, stdout=PIPE, stderr=STDOUT)
     stdout, stderr = process.communicate()
