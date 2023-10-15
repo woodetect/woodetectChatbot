@@ -14,6 +14,7 @@ class pyllama:
         ]
         self.exit_request = False
         self.wait_input = False
+        self.generation_started = False
         self.process = Popen(command,
                              stdout=PIPE,
                              stderr=PIPE,
@@ -25,6 +26,9 @@ class pyllama:
     def write_log(self, text):
         with open("log.txt", "a") as f:
             f.write(text + "\n")
+    
+    def is_loading(self):
+        return not self.generation_started
 
     def send(self, text):
         self.process.stdin.write(text)
@@ -32,6 +36,9 @@ class pyllama:
     
     def pyllama_exited(self) -> bool:
         return self.exit_request
+    
+    def generation_has_started(self) -> bool:
+        return self.generation_started
     
     def pyllama_wait_input(self) -> bool:
         if self.wait_input:
@@ -43,7 +50,6 @@ class pyllama:
         timeout = 1.0
         partial_word = ""
         partial_err = ""
-        generation_started = False
         rlist = None
         while True:
             rlist, _, _ = select.select([self.process.stdout, self.process.stderr], [], [], timeout)
@@ -63,13 +69,15 @@ class pyllama:
                 yield ""
             partial_word += output_char
             partial_err += err_char
-            if output_char != '' and generation_started == False:
+            if partial_err == '\n':
+                print('.', end='', flush=True)
+            if output_char != '' and self.generation_started == False:
                 print("\npyllama: generation started.")
-                generation_started = True
-            if generation_started == False:
+                self.generation_started = True
+            if self.generation_started == False:
                 continue
             # end log message, mean generation ended
-            if generation_started == True and err_char != '':
+            if self.generation_started == True and err_char != '':
                 print("\npyllama: word generation terminated, llm shutdown.")
                 break
             if output_char not in " \n.":
