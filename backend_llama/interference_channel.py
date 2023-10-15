@@ -3,18 +3,18 @@ from subprocess import Popen, PIPE, STDOUT, DEVNULL
 import select
 
 class pyllama:
-    def __init__(self, reverse_prompt="###Human:", n_predict="128", ctx_size="512"):
+    def __init__(self, stop_keyword="###", n_predict="128", ctx_size="512"):
         command = [
             "../llama.cpp/bin/main",
             "-m", "../saved_models/llama-2-7b-q4_0.gguf",
             "--interactive-first",
-            "--reverse-prompt", reverse_prompt,
             "--n-predict", n_predict,
             "--ctx-size", ctx_size,
         ]
         self.exit_request = False
         self.wait_input = False
         self.generation_started = False
+        self.stop_keyword = stop_keyword
         self.process = Popen(command,
                              stdout=PIPE,
                              stderr=PIPE,
@@ -80,9 +80,11 @@ class pyllama:
             if self.generation_started == True and err_char != '':
                 print("\npyllama: word generation terminated, llm shutdown.")
                 break
-            if output_char not in " \n.":
+            if output_char != ' ' and output_char != '\n' and output_char != '\t':
                 continue
-            self.word_history.append(partial_word)
+            if self.stop_keyword in partial_word:
+                self.wait_input = True
+                yield "STOP"
             returned_word = partial_word
             partial_word = ""
             yield returned_word
