@@ -1,0 +1,9 @@
+n: build = 1366 (8c70a5f)
+main: built with apple clang version 13.1.6 (clang-1316.0.21.2.3) for arm64-apple-darwin22.4.0
+main: seed  = 1697364175
+error loading model: llama_model_loader: failed to load model from ../saved_models/llama-2-7b.q4_0.gguf
+
+llama_load_model_from_file: failed to load model
+llama_init_from_gpt_params: error: failed to load model '../saved_models/llama-2-7b.q4_0.gguf'
+main: error: unable to load model
+

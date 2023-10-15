@@ -1,3 +1,5 @@
+saved_models/*
+llama.cpp/
 # Logs
 node_modules/
 logs

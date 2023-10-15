@@ -1,5 +1,5 @@
 import time
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import re
 import warnings
@@ -18,16 +18,34 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def get_status():
     return "online" 
 
-@app.route('/send_message', methods=['GET', 'POST'])
-@cross_origin()
-def send_message():
-    user_msg = "\nUser: " + request.json['message'] + "\n"
+
+control = pyllama()
+# Store the generator object
+gen_obj = None
+
+@app.route('/get_word', methods=['GET'])
+def get_word():
+    global gen_obj
+    word = ""
+    if gen_obj is None:
+        gen_obj = control.pyllama_next()
     try:
-        print("generating response...")
-        llm_response, _ = llama_cpp_call(user_msg, user_msg)
-    except Exception as e:
-        write_log(e)
-    return {'reply': llm_response}
+        word = next(gen_obj)
+    except StopIteration:
+        gen_obj = None  # Reset the generator if it's reached the end
+        word = "STOP"
+    return jsonify({"reply": word})
+
+@app.route('/check_wait_input', methods=['GET'])
+def check_wait_input():
+    return jsonify({"wait_input": control.pyllama_wait_input()})
+
+@app.route('/send_message', methods=['GET', 'POST'])
+def send_message():
+    message = request.json['message']
+    formatted_question = f"###Human: {message}\n###Assistant:"
+    control.send(formatted_question)
+    return jsonify({"status": "Message sent"})
 
 if __name__ == '__main__':
     app.run(port=80)
