@@ -3,14 +3,14 @@ from subprocess import Popen, PIPE, STDOUT
 
 from interference_channel import *
 
-control = pyllama()
-for word in control.pyllama_next():
+control = pyllamacpp()
+for word in control.pyllamacpp_next():
     if control.is_loading():
         print("Waiting for llm...")
-    if control.pyllama_exited():
+    if control.pyllamacpp_exited():
         break
-    if control.pyllama_wait_input():
-        time.sleep(0.6)
+    if control.pyllamacpp_wait_input():
+        time.sleep(0.3)
         question = input("\nEnter query: ")
         formatted_question = f"###Human: {question}\n###Assistant: "
         control.send(formatted_question)

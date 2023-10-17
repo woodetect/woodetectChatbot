@@ -1,8 +1,0 @@
-1. clone meta llam2 repository
-2. follow install instruction and clone repo on VM along this one
-
-Alternative :
-
-1. request llma2 on huggingface
-2. install huggingface cli 
-3.  login with token on huggingface
