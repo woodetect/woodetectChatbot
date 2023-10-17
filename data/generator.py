@@ -5,7 +5,7 @@ import openai
 from colorama import Fore
 import random
 
-openai.api_key = "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"
+openai.api_key = ""
 
 PRESENTATION_FILE = "presentation-short.txt"
 
