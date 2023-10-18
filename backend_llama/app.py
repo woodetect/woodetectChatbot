@@ -7,7 +7,7 @@ from typing import List
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
-from interference_channel import *
+from llamacpp_channel import *
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -19,7 +19,7 @@ def get_status():
     return "online" 
 
 
-control = pyllama()
+control = pyllamacpp()
 # Store the generator object
 gen_obj = None
 
@@ -28,7 +28,7 @@ def get_word():
     global gen_obj
     word = ""
     if gen_obj is None:
-        gen_obj = control.pyllama_next()
+        gen_obj = control.pyllamacpp_next()
     try:
         word = next(gen_obj)
     except StopIteration:
@@ -38,7 +38,7 @@ def get_word():
 
 @app.route('/check_wait_input', methods=['GET'])
 def check_wait_input():
-    return jsonify({"wait_input": control.pyllama_wait_input()})
+    return jsonify({"wait_input": control.pyllamacpp_wait_input()})
 
 @app.route('/send_message', methods=['GET', 'POST'])
 def send_message():

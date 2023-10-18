@@ -1,7 +1,7 @@
 import time
 from subprocess import Popen, PIPE, STDOUT
 
-from interference_channel import *
+from llamacpp_channel import *
 
 control = pyllamacpp()
 for word in control.pyllamacpp_next():
