@@ -22,6 +22,12 @@ export default function ChatBox() {
     }
   ])
 
+  //const server_url = "http://127.0.0.1:8080";
+  const server_url = "https://adff-2a02-8440-d207-3598-a1ee-495b-9745-78f6.ngrok-free.app";
+  const last_sentence_route = server_url + "/get_last_sentence";
+  const send_message_route = server_url + "/send_message";
+  const check_waiting_route = server_url + "/check_waiting";
+
   //const m = React.useMemo(() => messages, [messages]);
 
   const handleSend = async (message) => {
@@ -42,16 +48,15 @@ export default function ChatBox() {
   }
 
   async function processMessageToChat(newMessage) {
-    const request_url = "http://127.0.0.1:5000/send_message";
-
     console.log("Sending message to backend :", newMessage);
     const data = {
       message: newMessage.message,
     };
-    fetch(request_url, {
+    fetch(send_message_route, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
+        mode: 'no-cors'
       },
       body: JSON.stringify(data) 
     })
@@ -79,45 +84,53 @@ export default function ChatBox() {
     }
   }
 
-  useEffect(() => {
-   console.log("Messages :", messages);
-  }, [messages]);  
     // Poll for updates from the backend server
     useEffect(() => {
-      let waiting = false;
+        // ------ Check server waiting status 
       const interval = setInterval(async () => {
-        /*try {
-          await fetch('http://127.0.0.1:5000/check_waiting', {
-            method: "GET",
+        try {
+          await fetch(check_waiting_route, {
+            headers: {
+              'Accept': 'application/json'
+            }
           })
-          .then(response => response.json())
+          .then(response => {
+            console.log("Full response: ", response);
+            console.log("Response headers: ", response.headers.get('Content-Type'));
+            return response.json();
+          })
           .then(data => {
-            console.log("Waiting for user to send message :", data.reply)
-            waiting = data.reply === 'False' ? false : true; 
+            let waiting = data.reply === 'False' ? false : true; 
+            setTyping(!waiting);
+            console.log("JSON response: ", data);
           })
         } catch (error) {
           console.error('Failed to fetch data:', error);
           return;
         }
-        if (waiting === true) {
-          console.log("still waiting...")
-          return;
-        }*/
+        // ------ Get last message from backend server
         try {
-          await fetch('http://127.0.0.1:5000/get_last_sentence')
+          await fetch(last_sentence_route, {
+            method: "GET",
+            headers: {
+              'Accept': 'application/json'
+            }
+          })
           .then(response => response.json())
           .then(data => {
+            console.log("Bot message  :", data);
             if (data.reply === '' || data.reply === null) {
+              console.log("No reply from server on /get_last_sentence")
               return;
             }
-            console.log("Bot message  :", data.reply);
             setMessages(prevMessages => updateLastElement(prevMessages, { message: data.reply,
                                                                           sender: "bot", direction: "incoming" }));
           })
         } catch (error) {
+          console.log(error)
           return;
         }
-      }, 1000); // TODO change to 500
+      }, 1500);
   
       return () => clearInterval(interval);
     }, [messages]);
