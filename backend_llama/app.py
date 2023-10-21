@@ -11,6 +11,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 from llamacpp_channel import *
 
 app = Flask(__name__)
+# TODO: change for production ?
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 control = pyllamacpp()
@@ -30,7 +31,7 @@ def is_loading():
 def get_sentence_history():
     return jsonify({"reply": str(control.get_sentences_history())})
 
-@app.route('/get_last_sentence', methods=['GET', 'POST'])
+@app.route('/get_last_sentence', methods=['GET'])
 def get_last_sentence():
     return jsonify({"reply": control.get_last_sentence()})
 
@@ -66,5 +67,5 @@ def llama_cpp_thread():
             print("Anormal stop")
 
 if __name__ == '__main__':
-    threading.Thread(target=lambda: app.run(port=5000, debug=True, use_reloader=False)).start()
+    threading.Thread(target=lambda: app.run(port=8080, debug=True, use_reloader=False)).start()
     llama_cpp_thread()
