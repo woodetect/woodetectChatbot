@@ -1,15 +1,21 @@
 
 from subprocess import Popen, PIPE, STDOUT, DEVNULL
 import select
+import threading
 
 class pyllamacpp:
-    def __init__(self, stop_keyword="###", n_predict="128", ctx_size="512"):
+    # TODO : change stop_keyword and ctx / n-predict later
+    def __init__(self, stop_keyword="."):
+        self.lock = threading.Lock()
         command = [
             "../llama.cpp/bin/main",
             "-m", "../saved_models/llama-2-7b-q4_0.gguf",
             "--interactive-first",
-            "--n-predict", n_predict,
-            "--ctx-size", ctx_size,
+            "--reverse-prompt", stop_keyword, 
+            "--presence-penalty", "1.0",
+            "--frequency-penalty", "1.0",
+            "--ctx-size", "128",
+            "--n-predict", "128"
         ]
         self.exit_request = False
         self.wait_input = False
@@ -21,7 +27,8 @@ class pyllamacpp:
                              stdin=PIPE,
                              bufsize=1,
                              universal_newlines=True)
-        self.word_history = []
+        self.phrase = ""
+        self.phrase_history = []
 
     def write_log(self, text):
         with open("log.txt", "a") as f:
@@ -31,27 +38,42 @@ class pyllamacpp:
         return not self.generation_started
 
     def send(self, text):
-        self.process.stdin.write(text)
-        self.process.stdin.flush()
+        self.phrase = ""
+        self.phrase_history.append(self.phrase)
+        with self.lock:
+            print("pyllamacpp: sending message to llm: " + text)
+            try:
+                self.process.stdin.write(text)
+                self.process.stdin.flush()
+            except Exception as e:
+                print("pyllamacpp: error sending message to llm.")
     
-    def pyllamacpp_exited(self) -> bool:
+    def exited(self) -> bool:
         return self.exit_request
     
     def generation_has_started(self) -> bool:
         return self.generation_started
     
-    def pyllamacpp_wait_input(self) -> bool:
-        if self.wait_input:
-            self.wait_input = False
-            return True
-        return False
+    def waiting(self) -> bool:
+        return self.wait_input
     
-    def pyllamacpp_next(self) -> None:
+    def get_sentence(self) -> str:
+        return self.phrase
+    
+    def get_sentences_history(self) -> any:
+        return self.phrase_history
+    
+    def get_last_sentence(self) -> str:
+        return self.phrase
+    
+    def next_word(self, verbose=True) -> None:
         timeout = 1.0
         partial_word = ""
         partial_err = ""
         rlist = None
+        i = 0
         while True:
+            i += 1
             rlist, _, _ = select.select([self.process.stdout, self.process.stderr], [], [], timeout)
             output_char = ""
             err_char = ""
@@ -60,21 +82,24 @@ class pyllamacpp:
                     output_char = self.process.stdout.read(1)
                 elif readable is self.process.stderr:
                     err_char = self.process.stderr.read(1)
-            #print(f"out ({output_char}) err ({err_char})")
             if err_char == '' and self.process.poll() is not None:
                 print("\npyllamacpp: process ended.")
                 break
-            if err_char == '' and output_char == '':
-                self.wait_input = True
-                yield ""
-            partial_word += output_char
-            partial_err += err_char
-            print(err_char, end='', flush=True)
+            if verbose:
+                print(err_char, end='', flush=True)
+                print(output_char, end='', flush=True)
             if output_char != '' and self.generation_started == False:
                 print("\npyllamacpp: generation started.")
                 self.generation_started = True
+            elif output_char != '':
+                self.wait_input = False
+            if err_char == '' and output_char == '':
+                self.wait_input = True
+                yield ""
             if self.generation_started == False:
                 continue
+            partial_word += output_char
+            partial_err += err_char
             # end log message, mean generation ended
             if self.generation_started == True and err_char != '':
                 print("\npyllamacpp: word generation terminated, llm shutdown.")
@@ -83,12 +108,11 @@ class pyllamacpp:
                 continue
             if self.stop_keyword in partial_word:
                 self.wait_input = True
-                yield "STOP"
+                yield ""
             returned_word = partial_word
+            self.phrase += returned_word
             partial_word = ""
             yield returned_word
-        if partial_word:
-            yield partial_word
         print("\npyllamacpp: process ended.")
         self.exit_request = True
         yield "EXIT"

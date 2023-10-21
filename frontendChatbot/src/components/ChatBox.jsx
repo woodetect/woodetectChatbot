@@ -1,7 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css'
 import { ChatBubbleBottomCenterIcon } from "@heroicons/react/24/outline";
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, ConversationHeader, ConversationList, Conversation, TypingIndicator } from '@chatscope/chat-ui-kit-react'
+import { MainContainer,
+         ChatContainer,
+         MessageList,
+         Message,
+         MessageInput,
+         ConversationHeader,
+         ConversationList,
+         Conversation,
+         TypingIndicator
+        } from '@chatscope/chat-ui-kit-react'
 
 export default function ChatBox() {
   const [typing, setTyping] = useState(false);
@@ -13,39 +22,105 @@ export default function ChatBox() {
     }
   ])
 
+  //const m = React.useMemo(() => messages, [messages]);
+
   const handleSend = async (message) => {
-    const newMessage = {
+    const newMessageUser = {
       message: message,
       sender: "user",
       direction: "outgoing"
     }
-    const newMessages = [...messages, newMessage];
+    const newMessageBot = {
+      message: "thinking...",
+      sender: "bot",
+      direction: "incoming"
+    }
+    const newMessages = [...messages, newMessageUser, newMessageBot];
     setMessages(newMessages);
     setTyping(true);
-    await processMessageToChat(newMessage)
+    await processMessageToChat(newMessageUser)
   }
 
   async function processMessageToChat(newMessage) {
-    const request_url = "http://127.0.0.1:80/send_message";
+    const request_url = "http://127.0.0.1:5000/send_message";
 
-    await fetch(request_url, {
-      method: "POST",
+    console.log("Sending message to backend :", newMessage);
+    const data = {
+      message: newMessage.message,
+    };
+    fetch(request_url, {
+      method: 'POST',
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newMessage)
+      body: JSON.stringify(data) 
     })
     .then(response => response.json()) // Parse the response as JSON
     .then(data => {
-        console.log(data.reply); // Access the 'reply' field in the data object
-        let stackedMessages = [newMessage, { message: data.reply, sender: "bot", direction: "incoming" }]
-        setMessages([...messages, ...stackedMessages]);
-        setTyping(false);
+        setTyping(true);
     })
     .catch(error => {
         console.error('Error:', error);
     });
   }
+
+  function updateLastElement(array, newValue) {
+    if (Array.isArray(array) && array.length > 1) {
+      return array.map((item, index) => {
+        if (index === array.length - 1 && item.sender === "bot") {
+          return newValue;
+        } else {
+          return item;
+        }
+      });
+    } else {
+      // Handle the case where the input array is empty or not an array
+      return array;
+    }
+  }
+
+  useEffect(() => {
+   console.log("Messages :", messages);
+  }, [messages]);  
+    // Poll for updates from the backend server
+    useEffect(() => {
+      let waiting = false;
+      const interval = setInterval(async () => {
+        /*try {
+          await fetch('http://127.0.0.1:5000/check_waiting', {
+            method: "GET",
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log("Waiting for user to send message :", data.reply)
+            waiting = data.reply === 'False' ? false : true; 
+          })
+        } catch (error) {
+          console.error('Failed to fetch data:', error);
+          return;
+        }
+        if (waiting === true) {
+          console.log("still waiting...")
+          return;
+        }*/
+        try {
+          await fetch('http://127.0.0.1:5000/get_last_sentence')
+          .then(response => response.json())
+          .then(data => {
+            if (data.reply === '' || data.reply === null) {
+              return;
+            }
+            console.log("Bot message  :", data.reply);
+            setMessages(prevMessages => updateLastElement(prevMessages, { message: data.reply,
+                                                                          sender: "bot", direction: "incoming" }));
+          })
+        } catch (error) {
+          return;
+        }
+      }, 1000); // TODO change to 500
+  
+      return () => clearInterval(interval);
+    }, [messages]);
 
   const darkGreen = 'rgb(41, 92, 60, 0.6)';
   const lightGreen = 'rgb(105, 163, 142, 0.7)';
