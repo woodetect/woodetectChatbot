@@ -54,7 +54,7 @@ def debug():
 @app.route('/send_message', methods=['GET', 'POST'])
 def send_message():
     message = request.json['message']
-    formatted_question = f"###Human: {message}\n"
+    formatted_question = f"###Human: {message} ###Human: {message} n" # /!\ \n IS VERY IMPORTANT (OTHERWISE LLAMA WILL NOT RESPOND)
     control.send(formatted_question)
     return jsonify({"reply": "Message sent"})
 

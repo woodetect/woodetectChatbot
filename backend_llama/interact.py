@@ -11,7 +11,6 @@ for word in control.next_word():
         print("Waiting for llm...")
     if control.waiting() and word == "":
         question = input("\nEnter query: ")
-        # no capital letters so it doesnt interfere with the stop keyword 
         formatted_question = f"###human: {question} ###assistant:\n" # /!\ \n IS VERY IMPORTANT (OTHERWISE LLAMA WILL NOT RESPOND)
         control.send(formatted_question)
     print(word, end=' ')

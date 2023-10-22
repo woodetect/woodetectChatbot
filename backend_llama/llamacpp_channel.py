@@ -5,11 +5,12 @@ import threading
 
 class pyllamacpp:
     # TODO : change stop_keyword and ctx / n-predict later
-    def __init__(self, stop_keyword="."):
+    def __init__(self, stop_keyword="###Human:"):
         self.lock = threading.Lock()
         command = [
             "../llama.cpp/bin/main",
             "-m", "../saved_models/llama-2-7b-q4_0.gguf",
+            #"--lora", "lora_path",
             "--interactive-first",
             "--reverse-prompt", stop_keyword, 
             "--presence-penalty", "1.0",
@@ -38,8 +39,8 @@ class pyllamacpp:
         return not self.generation_started
 
     def send(self, text):
-        self.phrase = ""
         self.phrase_history.append(self.phrase)
+        self.phrase = ""
         with self.lock:
             print("pyllamacpp: sending message to llm: " + text)
             try:
