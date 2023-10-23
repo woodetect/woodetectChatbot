@@ -54,17 +54,14 @@ def debug():
 @app.route('/send_message', methods=['GET', 'POST'])
 def send_message():
     message = request.json['message']
-    formatted_question = f"###Human: {message} ###Human: {message} n" # /!\ \n IS VERY IMPORTANT (OTHERWISE LLAMA WILL NOT RESPOND)
+    formatted_question = f"###Human: {message} ###Human: {message}" # /!\ \n IS VERY IMPORTANT (OTHERWISE LLAMA WILL NOT RESPOND)
     control.send(formatted_question)
     return jsonify({"reply": "Message sent"})
 
 def llama_cpp_thread():
     global gen_obj
     while True:
-        try:
-            word = next(gen_obj)
-        except  StopIteration:
-            print("Anormal stop")
+        word = next(gen_obj)
 
 if __name__ == '__main__':
     threading.Thread(target=lambda: app.run(port=8080, debug=True, use_reloader=False)).start()

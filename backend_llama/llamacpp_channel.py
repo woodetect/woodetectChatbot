@@ -12,11 +12,12 @@ class pyllamacpp:
             "-m", "../saved_models/llama-2-7b-q4_0.gguf",
             #"--lora", "lora_path",
             "--interactive-first",
+            "--simple-io",
             "--reverse-prompt", stop_keyword, 
-            "--presence-penalty", "1.0",
-            "--frequency-penalty", "1.0",
-            "--ctx-size", "128",
-            "--n-predict", "128"
+            "--presence-penalty", "1.1",
+            "--frequency-penalty", "1.1",
+            "--ctx-size", "512",
+            "--n-predict", "-1"
         ]
         self.exit_request = False
         self.wait_input = False
