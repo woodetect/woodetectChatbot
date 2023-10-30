@@ -6,14 +6,14 @@ import threading
 
 class pyllamacpp:
     # TODO : change stop_keyword and ctx / n-predict later
-    def __init__(self, stop_keyword="#"):
+    def __init__(self, stop_keyword="###"):
         self.lock = threading.Lock()
         command = [
-            "../llama.cpp/bin/main",
-            "-m", "../saved_models/llama-2-7b.Q8_0.gguf",
-            "--lora", "./woodetect-lora-q8-180.bin",
-            "--interactive-first",
+            "../../llama.cpp/bin/main",
+            "-m", "../../llama-2-7b.Q8_0.gguf",
             "--simple-io",
+            "--lora", "../../bin_lora/woodetect-lora-q8-180.bin",
+            "--interactive-first",
             "--reverse-prompt", stop_keyword, 
             "--ctx-size", "512",
             "--n-predict", "-1"
