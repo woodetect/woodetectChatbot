@@ -9,8 +9,8 @@ class pyllamacpp:
     def __init__(self, stop_keyword="#"):
         self.lock = threading.Lock()
         command = [
-            "../../llama.cpp/bin/main",
-            "-m", "../../llama-2-7b.Q8_0.gguf",
+            "../llama.cpp/bin/main",
+            "-m", "../saved_models/llama-2-7b.Q8_0.gguf",
             "--lora", "./woodetect-lora-q8-180.bin",
             "--interactive-first",
             "--simple-io",
