@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
@@ -54,7 +55,7 @@ def debug():
 @app.route('/send_message', methods=['GET', 'POST'])
 def send_message():
     message = request.json['message']
-    formatted_question = f"###Human: {message} ###Human: {message}" # /!\ \n IS VERY IMPORTANT (OTHERWISE LLAMA WILL NOT RESPOND)
+    formatted_question = f"###Human: {message} ###Assistant:\n" # /!\ \n IS VERY IMPORTANT (OTHERWISE LLAMA WILL NOT RESPOND)
     control.send(formatted_question)
     return jsonify({"reply": "Message sent"})
 
@@ -64,5 +65,5 @@ def llama_cpp_thread():
         word = next(gen_obj)
 
 if __name__ == '__main__':
-    threading.Thread(target=lambda: app.run(port=8080, debug=True, use_reloader=False)).start()
+    threading.Thread(target=lambda: app.run(port=5000, debug=False, use_reloader=False)).start()
     llama_cpp_thread()

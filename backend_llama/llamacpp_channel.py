@@ -1,21 +1,20 @@
 
 from subprocess import Popen, PIPE, STDOUT, DEVNULL
+import os
 import select
 import threading
 
 class pyllamacpp:
     # TODO : change stop_keyword and ctx / n-predict later
-    def __init__(self, stop_keyword="###Human:"):
+    def __init__(self, stop_keyword="#"):
         self.lock = threading.Lock()
         command = [
-            "../llama.cpp/bin/main",
-            "-m", "../saved_models/llama-2-7b-q4_0.gguf",
-            #"--lora", "lora_path",
+            "../../llama.cpp/bin/main",
+            "-m", "../../llama-2-7b.Q8_0.gguf",
+            "--lora", "./woodetect-lora-q8-180.bin",
             "--interactive-first",
             "--simple-io",
             "--reverse-prompt", stop_keyword, 
-            "--presence-penalty", "1.1",
-            "--frequency-penalty", "1.1",
             "--ctx-size", "512",
             "--n-predict", "-1"
         ]
@@ -49,6 +48,7 @@ class pyllamacpp:
                 self.process.stdin.flush()
             except Exception as e:
                 print("pyllamacpp: error sending message to llm.")
+                print(e)
     
     def exited(self) -> bool:
         return self.exit_request
@@ -66,7 +66,7 @@ class pyllamacpp:
         return self.phrase_history
     
     def get_last_sentence(self) -> str:
-        return self.phrase
+        return self.phrase.replace("#", "")
     
     def next_word(self, verbose=True) -> None:
         timeout = 1.0
