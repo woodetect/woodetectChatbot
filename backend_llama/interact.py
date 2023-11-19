@@ -1,3 +1,8 @@
+"""
+Script for testing llm interaction with the terminal.
+author: Martin Legrand
+"""
+
 import time
 from subprocess import Popen, PIPE, STDOUT
 

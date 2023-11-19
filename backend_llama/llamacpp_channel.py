@@ -1,4 +1,9 @@
 
+"""
+Code for controlling llama.cpp program using python subprocess.
+author: Martin Legrand
+"""
+
 from subprocess import Popen, PIPE, STDOUT, DEVNULL
 import os
 import select
@@ -9,10 +14,10 @@ class pyllamacpp:
     def __init__(self, stop_keyword="###"):
         self.lock = threading.Lock()
         command = [
-            "../../llama.cpp/bin/main",
-            "-m", "../../llama-2-7b.Q8_0.gguf",
+            "../llama.cpp/bin/main",
+            "-m", "../saved_models/llama-2-7b-q4_0.gguf",
             "--simple-io",
-            "--lora", "../../bin_lora/woodetect-lora-q8-180.bin",
+            #"--lora", "../../bin_lora/woodetect-lora-q8-180.bin",
             "--interactive-first",
             "--reverse-prompt", stop_keyword, 
             "--ctx-size", "512",
@@ -31,14 +36,14 @@ class pyllamacpp:
         self.phrase = ""
         self.phrase_history = []
 
-    def write_log(self, text):
+    def write_log(self, text: str) -> None:
         with open("log.txt", "a") as f:
             f.write(text + "\n")
     
-    def is_loading(self):
+    def is_loading(self) -> bool:
         return not self.generation_started
 
-    def send(self, text):
+    def send(self, text: str) -> None:
         self.phrase_history.append(self.phrase)
         self.phrase = ""
         with self.lock:
@@ -62,7 +67,7 @@ class pyllamacpp:
     def get_sentence(self) -> str:
         return self.phrase
     
-    def get_sentences_history(self) -> any:
+    def get_sentences_history(self) -> list[str]:
         return self.phrase_history
     
     def get_last_sentence(self) -> str:
@@ -104,7 +109,7 @@ class pyllamacpp:
             partial_err += err_char
             # end log message, mean generation ended
             if self.generation_started == True and err_char != '':
-                print("\npyllamacpp: word generation terminated, llm shutdown.")
+                print("\npyllamacpp: No more message on stdin and stdout, llm has exited or process detached.")
                 break
             if output_char != ' ' and output_char != '\n' and output_char != '\t':
                 continue
