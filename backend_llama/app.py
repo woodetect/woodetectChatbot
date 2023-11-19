@@ -101,7 +101,8 @@ def send_message_and_wait():
     message = request.json['message']
     formatted_question = f"###Human: {message} ###Assistant:\n"
     control.send(formatted_question)
-    # FIX THIS
+    while control.waiting():
+        continue
     while True:
         if not control.waiting():
             time.sleep(0.1)
@@ -114,6 +115,11 @@ def llama_cpp_thread():
     while True:
         next(llama_generator)
 
+def app_thread():
+    app.run(port=5000, debug=False, use_reloader=False)
+
 if __name__ == '__main__':
-    threading.Thread(target=lambda: app.run(port=5000, debug=False, use_reloader=False)).start()
-    llama_cpp_thread()
+    t1 = threading.Thread(target=lambda: app_thread())
+    t2 = threading.Thread(target=lambda: llama_cpp_thread())
+    t1.start()
+    t2.start()
